@@ -5,7 +5,7 @@ set(PICO_PLATFORM rp2040)
 
 include(pico_sdk_import.cmake)
 
-project(133-led-button-usb)
+project(133_led_button_usb)
 
 pico_sdk_init()
 
@@ -21,7 +21,7 @@ pico_set_linker_script(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/memmap_rp2040.ld
 )
 
-pico_enable_stdio_usb(133-led-button-usb 1)
-pico_enable_stdio_uart(133-led-button-usb 0)
+pico_enable_stdio_usb(${PROJECT_NAME} 1)
+pico_enable_stdio_uart(${PROJECT_NAME} 0)
 
 pico_add_extra_outputs(${PROJECT_NAME})
