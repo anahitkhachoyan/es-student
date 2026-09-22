@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include "pico/unique_id.h"
+#include "pico/version.h"
 #include "hardware/regs/addressmap.h"
 #include "hardware/regs/sysinfo.h"
 
