@@ -3,6 +3,7 @@
 #include "hardware/gpio.h"
 #include "led.h"
 #include "log.h"
+#include "device.h"
 
 const uint DEBOUNCE_MS = 20;
 const uint BUTTON_PIN = 15;
