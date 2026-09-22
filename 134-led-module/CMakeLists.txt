@@ -12,14 +12,23 @@ pico_sdk_init()
 add_executable(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/main.c
     ${CMAKE_CURRENT_SOURCE_DIR}/led/led.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/logging/log.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/device/device.c
 )
 
 target_link_libraries(${PROJECT_NAME}
-   pico_stdlib
+    pico_stdlib
+    pico_unique_id
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/led
+    ${CMAKE_CURRENT_SOURCE_DIR}/logging
+    ${CMAKE_CURRENT_SOURCE_DIR}/device
+)
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    DEVICE_BOARD="${PICO_BOARD}"
 )
 
 pico_set_linker_script(${PROJECT_NAME}
