@@ -2,10 +2,6 @@
 
 #include <stdio.h>
 
-// Определяем константы прямо здесь, чтобы журнал не зависел от device.h
-#define DEVICE_NAME "es-led-module"
-#define FIRMWARE_VERSION "1.2.0"
-
 #define LOG_LEVEL_ERR 1
 #define LOG_LEVEL_INF 2
 #define LOG_LEVEL_DBG 3

@@ -9,8 +9,6 @@
 #include "button-task.h"
 #include "pi-task.h"
 
-LOG_INF("Starting %s v%s\n", FIRMWARE_NAME, FIRMWARE_VERSION);
-
 enum {
     STOPWATCH_LOOP,
     STOPWATCH_COMMAND,
@@ -21,6 +19,7 @@ enum {
 
 int main()
 {
+
     stdio_init_all();
 
     profiling_stopwatch_init(STOPWATCH_LOOP, "loop");
