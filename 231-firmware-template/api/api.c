@@ -43,7 +43,16 @@ static void print_led_status(void)
 static void cmd_info(const command_t *cmd)
 {
     (void)cmd;
-    device_info();
+    device_info_t info;
+    device_get_info(&info);
+
+    printf("project: %s\n", info.project);
+    printf("repo: %s\n", info.repo);
+    printf("board: %s\n", info.board);
+    printf("pico-sdk: %s\n", info.sdk_version);
+    printf("serial: %s\n", info.serial);
+    printf("chip: manufacturer 0x%03x, part 0x%04x, revision %u\n",
+           (unsigned)info.manufacturer, (unsigned)info.part, (unsigned)info.revision);
 }
 
 static void cmd_uptime(const command_t *cmd)
@@ -52,17 +61,29 @@ static void cmd_uptime(const command_t *cmd)
     printf("uptime: %llu ms\n", time_us_64() / 1000);
 }
 
-static void cmd_main_time_exec(const command_t *cmd)
+static void cmd_profiling(const command_t *cmd)
 {
     (void)cmd;
-    printf("iteration avg %.2f us, max %u us\n", profiling_avg_us(), (unsigned)profiling_max_us());
+    profiling_result_t res;
+    // Выводим все заведённые секундомеры из массива по порядку
+    for (uint32_t i = 0; i < PROFILING_MAX_STOPWATCHES; i++)
+    {
+        if (profiling_get(i, &res))
+        {
+            printf("%-10s count %-10u mean %.2f us  max %u us\n",
+                   res.name,
+                   (unsigned)res.count,
+                   res.mean_us,
+                   (unsigned)res.max_us);
+        }
+    }
 }
 
-static void cmd_main_time_reset(const command_t *cmd)
+static void cmd_profiling_reset(const command_t *cmd)
 {
     (void)cmd;
-    profiling_reset_max();
-    printf("max reset\n");
+    profiling_reset();
+    printf("profiling reset\n");
 }
 
 static void cmd_led_enable(const command_t *cmd)
@@ -188,8 +209,8 @@ typedef struct {
 static const api_command_t commands[] = {
     { "info",            "device passport",                          cmd_info },
     { "uptime",          "time since reset",                         cmd_uptime },
-    { "main_time_exec",  "superloop iteration: average and maximum", cmd_main_time_exec },
-    { "main_time_reset", "reset maximum iteration",                  cmd_main_time_reset },
+    { "profiling",       "profiling results for all stopwatches",    cmd_profiling },
+    { "profiling_reset", "reset profiling stopwatches",              cmd_profiling_reset },
     { "led_enable",      "turn on led",                              cmd_led_enable },
     { "led_disable",     "turn off led",                             cmd_led_disable },
     { "led_blink",       "blink led",                                cmd_led_blink },
