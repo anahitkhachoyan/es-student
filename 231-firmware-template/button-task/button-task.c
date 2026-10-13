@@ -7,8 +7,8 @@
 #define BUTTON_PIN 15
 #endif
 
-// Порог подавления дребезга: 20 мс = 20000 мкс
-#define DEBOUNCE_DELAY_US 20000ULL
+// Порог подавления дребезга: ровно 20 мс в микросекундах
+#define DEBOUNCE_DELAY_US 20000
 
 typedef enum {
     BUTTON_STATE_RELEASED,
