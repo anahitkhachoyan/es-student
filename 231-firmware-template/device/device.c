@@ -4,6 +4,18 @@
 #include "hardware/regs/addressmap.h"
 #include "hardware/regs/sysinfo.h"
 
+// Вспомогательная функция безопасного копирования строк без использования функций со словом print
+static void copy_string(char *dest, const char *src, size_t max_len)
+{
+    size_t i = 0;
+    while (src[i] != '\0' && i < max_len - 1)
+    {
+        dest[i] = src[i];
+        i++;
+    }
+    dest[i] = '\0';
+}
+
 void device_get_info(device_info_t *info)
 {
     if (info == NULL)
@@ -11,10 +23,10 @@ void device_get_info(device_info_t *info)
         return;
     }
 
-    snprintf(info->project, sizeof(info->project), "%s", DEVICE_PROJECT);
-    snprintf(info->repo, sizeof(info->repo), "%s", DEVICE_REPO);
-    snprintf(info->board, sizeof(info->board), "%s", DEVICE_BOARD);
-    snprintf(info->sdk_version, sizeof(info->sdk_version), "%s", PICO_SDK_VERSION_STRING);
+    copy_string(info->project, DEVICE_PROJECT, sizeof(info->project));
+    copy_string(info->repo, DEVICE_REPO, sizeof(info->repo));
+    copy_string(info->board, DEVICE_BOARD, sizeof(info->board));
+    copy_string(info->sdk_version, PICO_SDK_VERSION_STRING, sizeof(info->sdk_version));
 
     pico_get_unique_board_id_string(info->serial, sizeof(info->serial));
 
