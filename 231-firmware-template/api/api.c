@@ -6,7 +6,7 @@
 #include "pico/stdlib.h"
 #include "device.h"
 #include "profiling.h"
-#include "led.h"
+#include "led-task.h"
 
 // Вспомогательная функция для безопасного разбора 32-битного числа без знака из строки
 static bool parse_u32(const char *str, uint32_t *out_value)
@@ -27,6 +27,14 @@ static bool parse_u32(const char *str, uint32_t *out_value)
 
     *out_value = (uint32_t)val;
     return true;
+}
+
+// Печать текущего статуса светодиода
+static void print_led_status(void)
+{
+    char buf[64];
+    led_task_get_status_str(buf, sizeof(buf));
+    printf("%s\n", buf);
 }
 
 // Функция расчёта числа Пи по ряду Лейбница
@@ -71,7 +79,7 @@ static void cmd_calc_pi(const command_t *cmd)
     {
         if (strcmp(cmd->argv[0], "0") == 0)
         {
-            printf("error: terms must be positive\n"); // или соответствующее требование из Приложения Б
+            printf("error: terms must be positive\n");
             return;
         }
 
@@ -104,6 +112,57 @@ static void cmd_main_time_reset(const command_t *cmd)
     printf("max reset\n");
 }
 
+static void cmd_led_enable(const command_t *cmd)
+{
+    (void)cmd;
+    led_task_set_state(LED_STATE_ON);
+    print_led_status();
+}
+
+static void cmd_led_disable(const command_t *cmd)
+{
+    (void)cmd;
+    led_task_set_state(LED_STATE_OFF);
+    print_led_status();
+}
+
+static void cmd_led_blink(const command_t *cmd)
+{
+    (void)cmd;
+    led_task_set_state(LED_STATE_BLINK);
+    print_led_status();
+}
+
+static void cmd_led_period(const command_t *cmd)
+{
+    if (cmd->argc != 1)
+    {
+        printf("error: usage led_period <period_ms>\n");
+        return;
+    }
+
+    uint32_t new_period = 0;
+    if (!parse_u32(cmd->argv[0], &new_period))
+    {
+        printf("error: usage led_period <period_ms>\n");
+        return;
+    }
+
+    if (new_period == 0)
+    {
+        printf("error: period_ms must be greater than 0\n");
+        return;
+    }
+
+    led_task_set_period_ms(new_period);
+    // Если в данный момент режим BLINK, обновляем таймер, чтобы переключение сработало вовремя
+    if (led_task_get_state() == LED_STATE_BLINK)
+    {
+        led_task_set_state(LED_STATE_BLINK);
+    }
+    print_led_status();
+}
+
 // Описание структуры команды в таблице API
 typedef struct {
     const char *name;
@@ -112,11 +171,15 @@ typedef struct {
 } api_command_t;
 
 static const api_command_t commands[] = {
-    { "info",            "device passport",                     cmd_info },
-    { "uptime",          "time since reset",                    cmd_uptime },
-    { "calc_pi",         "calculate pi: calc_pi [terms]",       cmd_calc_pi },
+    { "info",            "device passport",                          cmd_info },
+    { "uptime",          "time since reset",                         cmd_uptime },
+    { "calc_pi",         "calculate pi: calc_pi [terms]",            cmd_calc_pi },
     { "main_time_exec",  "superloop iteration: average and maximum", cmd_main_time_exec },
-    { "main_time_reset", "reset maximum iteration",             cmd_main_time_reset },
+    { "main_time_reset", "reset maximum iteration",                  cmd_main_time_reset },
+    { "led_enable",      "turn on led",                              cmd_led_enable },
+    { "led_disable",     "turn off led",                             cmd_led_disable },
+    { "led_blink",       "blink led",                                cmd_led_blink },
+    { "led_period",      "set blink period: led_period <period_ms>", cmd_led_period },
 };
 
 static const uint32_t command_count = sizeof(commands) / sizeof(commands[0]);
