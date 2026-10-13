@@ -6,6 +6,7 @@
 #include "stdio-text-protocol.h"
 #include "api.h"
 #include "led-task.h"
+#include "button-task.h"
 
 int main()
 {
@@ -13,11 +14,13 @@ int main()
     profiling_init();
     stdio_text_protocol_init();
     led_task_init();
+    button_task_init();
 
     while (1)
     {
         profiling_iteration();
-        led_task_handle(); // Задача светодиода выполняется на каждой итерации суперцикла
+        led_task_handle();
+        button_task_handle(); // Опрос кнопки без пауз на каждой итерации
 
         const command_t *command = stdio_text_protocol_handle();
         if (command != NULL)
