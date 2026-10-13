@@ -11,16 +11,13 @@ void device_get_info(device_info_t *info)
         return;
     }
 
-    // Заполняем строковые поля структуры
     snprintf(info->project, sizeof(info->project), "%s", DEVICE_PROJECT);
     snprintf(info->repo, sizeof(info->repo), "%s", DEVICE_REPO);
     snprintf(info->board, sizeof(info->board), "%s", DEVICE_BOARD);
     snprintf(info->sdk_version, sizeof(info->sdk_version), "%s", PICO_SDK_VERSION_STRING);
 
-    // Читаем серийный номер платы функцией SDK
     pico_get_unique_board_id_string(info->serial, sizeof(info->serial));
 
-    // Читаем регистр CHIP_ID по адресу и разбираем три поля
     volatile uint32_t *chip_id = (uint32_t *)(SYSINFO_BASE + SYSINFO_CHIP_ID_OFFSET);
     uint32_t id = *chip_id;
 
