@@ -8,7 +8,7 @@ static uint64_t last_toggle_us = 0;
 static bool led_is_on = false;
 static led_task_output_t led_output = NULL;
 
-static void set_gpio_output(bool on)
+static void set_led_output(bool on)
 {
     led_is_on = on;
     if (led_output != NULL)
@@ -41,10 +41,10 @@ void led_task_set_state(led_state_t state)
     switch (current_state)
     {
     case LED_STATE_OFF:
-        set_gpio_output(false);
+        set_led_output(false);
         break;
     case LED_STATE_ON:
-        set_gpio_output(true);
+        set_led_output(true);
         break;
     case LED_STATE_BLINK:
         break;
@@ -91,7 +91,7 @@ void led_task_handle(uint64_t now_us)
     case LED_STATE_BLINK:
         if (period_elapsed(&last_toggle_us, (uint64_t)(period_ms * 1000ULL / 2ULL), now_us))
         {
-            set_gpio_output(!led_is_on);
+            set_led_output(!led_is_on);
         }
         break;
     }
