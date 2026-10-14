@@ -8,7 +8,6 @@
 #include "systime/systime.h"
 #include "platform/platform.h"
 #include "api/api.h"
-#include "api-commands.h" // здесь объявлена api_set_uptime_callback
 #include "led-task.h"
 #include "button-task.h"
 #include "pi-task.h"
@@ -33,11 +32,12 @@ int main()
 
     stdio_text_protocol_init();
     
-    // Инициализация задач и прокидывание колбэков платформы и времени
     led_task_init(platform_led_set);
     button_task_init(platform_button_read, led_task_next_state);
     pi_task_init();
-    api_set_uptime_callback(systime_ms); // Передаем часы через чистый колбэк в логику
+    
+    // Инициализируем API и прокидываем системное время из платформы/systime в логику
+    api_init(systime_ms);
 
     LOG_INF("Starting %s v%s\n", FIRMWARE_NAME, FIRMWARE_VERSION);
 
@@ -61,7 +61,7 @@ int main()
         const command_t *command = stdio_text_protocol_handle();
         if (command != NULL)
         {
-            api_handle(command); // Вся обработка команд строго внутри логики!
+            api_handle(command);
         }
         profiling_stop(STOPWATCH_COMMAND);
 

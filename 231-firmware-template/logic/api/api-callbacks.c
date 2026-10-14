@@ -1,24 +1,16 @@
 #include "api-commands.h"
+#include "api.h" // для api_get_uptime
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
 #include "device/device.h"
 #include "profiling/profiling.h"
-// Никакого #include "systime/systime.h" здесь больше нет!
 #include "led-task.h"
 #include "button-task.h"
 #include "pi-task.h"
 
-// Статическая переменная для хранения колбэка времени, пришедшего из main/platform
-static api_uptime_cb_t uptime_callback = NULL;
-
-void api_set_uptime_callback(api_uptime_cb_t cb)
-{
-    uptime_callback = cb;
-}
-
-// Вспомогательная функция для безопасного разбора 32-битного числа без знака из строки
+// Вспомогательная функция для безопасного разбора 32-битного числа без знака
 static bool parse_u32(const char *str, uint32_t *out_value)
 {
     if (str == NULL || *str == '\0')
@@ -47,7 +39,7 @@ static void print_led_status(void)
     printf("%s\n", buf);
 }
 
-// Обработчики команд
+// Обработчики команд (все static!)
 static void cmd_info(const command_t *cmd)
 {
     (void)cmd;
@@ -66,14 +58,7 @@ static void cmd_info(const command_t *cmd)
 static void cmd_uptime(const command_t *cmd)
 {
     (void)cmd;
-    if (uptime_callback != NULL)
-    {
-        printf("uptime: %llu ms\n", uptime_callback());
-    }
-    else
-    {
-        printf("uptime: 0 ms\n");
-    }
+    printf("uptime: %llu ms\n", api_get_uptime());
 }
 
 static void cmd_profiling(const command_t *cmd)
