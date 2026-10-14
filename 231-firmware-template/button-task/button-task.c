@@ -2,6 +2,7 @@
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
 #include "led-task.h"
+#include "systime/systime.h"
 
 #ifndef BUTTON_PIN
 #define BUTTON_PIN 15
@@ -29,7 +30,7 @@ void button_task_init(void)
 
     button_state = BUTTON_STATE_RELEASED;
     press_count = 0;
-    transition_time_us = time_us_64();
+    transition_time_us = systime_us();
 }
 
 bool button_task_is_pressed(void)
@@ -47,7 +48,7 @@ void button_task_handle(void)
 {
     // Кнопка замыкает пин на землю при нажатии (низкий уровень = 0)
     bool is_low = (gpio_get(BUTTON_PIN) == 0);
-    uint64_t now_us = time_us_64();
+    uint64_t now_us = systime_us();
 
     switch (button_state)
     {

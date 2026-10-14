@@ -3,6 +3,7 @@
 #include <string.h>
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
+#include "systime/systime.h"
 
 // Пин встроенного светодиода на Raspberry Pi Pico обычно GPIO 25
 #ifndef LED_PIN
@@ -23,7 +24,7 @@ static void set_gpio_output(bool on)
 // Проверка периода по сетке без накопления ошибки
 static bool period_elapsed(uint64_t *last_us, uint64_t period_us)
 {
-    uint64_t now_us = time_us_64();
+    uint64_t now_us = systime_us();
     if (now_us - *last_us >= period_us)
     {
         *last_us += period_us;
@@ -38,14 +39,14 @@ void led_task_init(void)
     gpio_set_dir(LED_PIN, GPIO_OUT);
 
     period_ms = 1000;
-    last_toggle_us = time_us_64();
+    last_toggle_us = systime_us();
     led_task_set_state(LED_STATE_BLINK);
 }
 
 void led_task_set_state(led_state_t state)
 {
     current_state = state;
-    uint64_t now_us = time_us_64();
+    uint64_t now_us = systime_us();
 
     switch (current_state)
     {
