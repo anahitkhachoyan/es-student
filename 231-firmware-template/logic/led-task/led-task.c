@@ -2,34 +2,72 @@
 #include <stdio.h>
 #include <string.h>
 
+// Тип для колбэка времени
+typedef uint64_t (*led_uptime_cb_t)(void);
+
 static led_state_t current_state = LED_STATE_BLINK;
 static uint32_t period_ms = 1000;
+static uint64_t last_toggle_us = 0;
 static bool led_is_on = false;
 static led_task_output_t led_output = NULL;
+static led_uptime_cb_t uptime_cb = NULL;
+
+void led_set_uptime_callback(led_uptime_cb_t cb)
+{
+    uptime_cb = cb;
+}
+
+static void set_gpio_output(bool on)
+{
+    led_is_on = on;
+    if (led_output != NULL)
+    {
+        led_output(on);
+    }
+}
+
+// Требуемая автотестами функция period_elapsed со сдвигом метки
+static bool period_elapsed(uint64_t *last_us, uint64_t period_us)
+{
+    if (uptime_cb == NULL)
+    {
+        return false;
+    }
+    uint64_t now_us = uptime_cb();
+    if (now_us - *last_us >= period_us)
+    {
+        *last_us += period_us;
+        return true;
+    }
+    return false;
+}
 
 void led_task_init(led_task_output_t output_cb)
 {
     led_output = output_cb;
     period_ms = 1000;
-    current_state = LED_STATE_BLINK;
-    led_is_on = false;
+    last_toggle_us = 0;
+    led_task_set_state(LED_STATE_BLINK);
 }
 
 void led_task_set_state(led_state_t state)
 {
     current_state = state;
-    if (led_output != NULL)
+    if (uptime_cb != NULL)
     {
-        if (state == LED_STATE_OFF)
-        {
-            led_is_on = false;
-            led_output(false);
-        }
-        else if (state == LED_STATE_ON)
-        {
-            led_is_on = true;
-            led_output(true);
-        }
+        last_toggle_us = uptime_cb();
+    }
+
+    switch (current_state)
+    {
+    case LED_STATE_OFF:
+        set_gpio_output(false);
+        break;
+    case LED_STATE_ON:
+        set_gpio_output(true);
+        break;
+    case LED_STATE_BLINK:
+        break;
     }
 }
 
@@ -62,19 +100,22 @@ void led_task_get_status_str(char *buf, size_t len)
     snprintf(buf, len, "led: %s, period %u ms", state_str, (unsigned)period_ms);
 }
 
-// Функция для внешнего управления миганием из main
-void led_task_toggle(void)
-{
-    if (current_state == LED_STATE_BLINK && led_output != NULL)
-    {
-        led_is_on = !led_is_on;
-        led_output(led_is_on);
-    }
-}
-
+// Классический led_task_handle с switch и period_elapsed
 void led_task_handle(void)
 {
-    // Никаких часов внутри логики! Временем управляет main.c
+    switch (current_state)
+    {
+    case LED_STATE_OFF:
+    case LED_STATE_ON:
+        break;
+
+    case LED_STATE_BLINK:
+        if (period_elapsed(&last_toggle_us, (uint64_t)(period_ms * 1000ULL / 2ULL)))
+        {
+            set_gpio_output(!led_is_on);
+        }
+        break;
+    }
 }
 
 void led_task_next_state(void)

@@ -12,6 +12,10 @@
 #include "button-task.h"
 #include "pi-task.h"
 
+// Прототипы функций регистрации времени для задач
+void led_set_uptime_callback(uint64_t (*cb)(void));
+void button_set_uptime_callback(uint64_t (*cb)(void));
+
 enum {
     STOPWATCH_LOOP,
     STOPWATCH_COMMAND,
@@ -36,28 +40,16 @@ int main()
     button_task_init(platform_button_read, led_task_next_state);
     pi_task_init();
     
-    // Инициализируем API и прокидываем системное время через безопасный колбэк
+    // Прокидываем системное время через колбэки в модули логики
     api_init(systime_ms);
+    led_set_uptime_callback(systime_us);
+    button_set_uptime_callback(systime_us);
 
     LOG_INF("Starting %s v%s\n", FIRMWARE_NAME, FIRMWARE_VERSION);
-
-    uint64_t last_blink_ms = 0;
 
     while (1)
     {
         profiling_start(STOPWATCH_LOOP);
-
-        // Таймер мигания светодиода управляется на верхнем уровне (в main.c)
-        uint64_t now_ms = systime_ms();
-        if (led_task_get_state() == LED_STATE_BLINK)
-        {
-            uint32_t period = led_task_get_period_ms();
-            if (period > 0 && (now_ms - last_blink_ms >= (period / 2)))
-            {
-                last_blink_ms = now_ms;
-                led_task_toggle(); // Переключаем состояние светодиода
-            }
-        }
 
         profiling_start(STOPWATCH_LED);
         led_task_handle();
