@@ -3,9 +3,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
-#include "pico/stdlib.h"
-#include "device.h"
-#include "profiling.h"
+#include "device/device.h"
+#include "profiling/profiling.h"
+#include "systime/systime.h"
 #include "led-task.h"
 #include "button-task.h"
 #include "pi-task.h"
@@ -58,12 +58,14 @@ static void cmd_info(const command_t *cmd)
 static void cmd_uptime(const command_t *cmd)
 {
     (void)cmd;
-    printf("uptime: %llu ms\n", time_us_64() / 1000);
+    // Чтение времени через systime вместо SDK
+    printf("uptime: %llu ms\n", systime_ms());
 }
 
 static void cmd_profiling(const command_t *cmd)
 {
     (void)cmd;
+#if PROFILING_ENABLED
     profiling_result_t res;
     // Выводим все заведённые секундомеры из массива по порядку
     for (uint32_t i = 0; i < PROFILING_MAX_STOPWATCHES; i++)
@@ -77,13 +79,20 @@ static void cmd_profiling(const command_t *cmd)
                    (unsigned)res.max_us);
         }
     }
+#else
+    printf("profiling is disabled in this build\n");
+#endif
 }
 
 static void cmd_profiling_reset(const command_t *cmd)
 {
     (void)cmd;
+#if PROFILING_ENABLED
     profiling_reset();
     printf("profiling reset\n");
+#else
+    printf("profiling is disabled in this build\n");
+#endif
 }
 
 static void cmd_led_enable(const command_t *cmd)
@@ -206,55 +215,4 @@ typedef struct {
     void (*callback)(const command_t *cmd);
 } api_command_t;
 
-static const api_command_t commands[] = {
-    { "info",            "device passport",                          cmd_info },
-    { "uptime",          "time since reset",                         cmd_uptime },
-    { "profiling",       "profiling results for all stopwatches",    cmd_profiling },
-    { "profiling_reset", "reset profiling stopwatches",              cmd_profiling_reset },
-    { "led_enable",      "turn on led",                              cmd_led_enable },
-    { "led_disable",     "turn off led",                             cmd_led_disable },
-    { "led_blink",       "blink led",                                cmd_led_blink },
-    { "led_period",      "set blink period: led_period <period_ms>", cmd_led_period },
-    { "button",          "button status and press count",            cmd_button },
-    { "pi_start",        "start pi calculation: pi_start [terms]",   cmd_pi_start },
-    { "pi",              "get pi calculation status or result",      cmd_pi },
-};
-
-static const uint32_t command_count = sizeof(commands) / sizeof(commands[0]);
-
-void api_handle(const command_t *command)
-{
-    // 1. Проверка на переполнение / превышение длины или аргументов
-    if (command->truncated)
-    {
-        printf("error: command longer than 63 characters or 4 arguments\n");
-        return;
-    }
-
-    // 2. Обработка команды help
-    if (strcmp(command->name, "help") == 0)
-    {
-        printf("help             list of commands\n");
-        for (uint32_t i = 0; i < command_count; i++)
-        {
-            printf("%-16s %s\n", commands[i].name, commands[i].help);
-        }
-        return;
-    }
-
-    // 3. Поиск и выполнение команды в таблице
-    for (uint32_t i = 0; i < command_count; i++)
-    {
-        if (strcmp(command->name, commands[i].name) == 0)
-        {
-            if (commands[i].callback != NULL)
-            {
-                commands[i].callback(command);
-            }
-            return;
-        }
-    }
-
-    // 4. Команда не найдена
-    printf("error: unknown command '%s', try help\n", command->name);
-}
+static const
