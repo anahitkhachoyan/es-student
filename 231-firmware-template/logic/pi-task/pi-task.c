@@ -1,6 +1,5 @@
 #include "pi-task.h"
 #include <stdint.h>
-#include "pico/stdlib.h"
 #include "systime/systime.h"
 
 // Размер порции: один член ряда ~585 тактов (~4.7 мкс на 125 МГц).

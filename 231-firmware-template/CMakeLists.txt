@@ -9,6 +9,8 @@ project(231_firmware_template)
 
 pico_sdk_init()
 
+add_subdirectory(../libs ${CMAKE_BINARY_DIR}/libs)
+
 # Предупреждения компилятора должны прийти и в библиотеки
 add_compile_options(-Wall)
 
