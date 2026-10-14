@@ -5,10 +5,18 @@
 #include <errno.h>
 #include "device/device.h"
 #include "profiling/profiling.h"
-#include "systime/systime.h"
+// Никакого #include "systime/systime.h" здесь больше нет!
 #include "led-task.h"
 #include "button-task.h"
 #include "pi-task.h"
+
+// Статическая переменная для хранения колбэка времени, пришедшего из main/platform
+static api_uptime_cb_t uptime_callback = NULL;
+
+void api_set_uptime_callback(api_uptime_cb_t cb)
+{
+    uptime_callback = cb;
+}
 
 // Вспомогательная функция для безопасного разбора 32-битного числа без знака из строки
 static bool parse_u32(const char *str, uint32_t *out_value)
@@ -58,7 +66,14 @@ static void cmd_info(const command_t *cmd)
 static void cmd_uptime(const command_t *cmd)
 {
     (void)cmd;
-    printf("uptime: %llu ms\n", systime_ms());
+    if (uptime_callback != NULL)
+    {
+        printf("uptime: %llu ms\n", uptime_callback());
+    }
+    else
+    {
+        printf("uptime: 0 ms\n");
+    }
 }
 
 static void cmd_profiling(const command_t *cmd)
