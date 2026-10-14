@@ -39,7 +39,6 @@ add_library(logic STATIC
 )
 
 target_include_directories(logic PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/logic
     ${CMAKE_CURRENT_SOURCE_DIR}/logic/api
     ${CMAKE_CURRENT_SOURCE_DIR}/logic/led-task
@@ -47,10 +46,10 @@ target_include_directories(logic PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/logic/pi-task
 )
 
-# stdio_text_protocol — PUBLIC, остальные библиотеки проекта — PRIVATE для logic
 target_link_libraries(logic PUBLIC
     stdio_text_protocol
 )
+
 target_link_libraries(logic PRIVATE
     device
     logging
