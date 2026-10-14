@@ -1,4 +1,4 @@
-#include "api.h"
+#include "api-commands.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -206,14 +206,8 @@ static void cmd_pi(const command_t *cmd)
     }
 }
 
-// Описание структуры команды в таблице API
-typedef struct {
-    const char *name;
-    const char *help;
-    void (*callback)(const command_t *cmd);
-} api_command_t;
-
-static const api_command_t commands[] = {
+// Таблица команд прибора
+const api_command_t api_commands[] = {
     { "info",            "device passport",                        cmd_info },
     { "uptime",          "time since reset",                       cmd_uptime },
     { "profiling",       "profiling results for all stopwatches",    cmd_profiling },
@@ -227,41 +221,4 @@ static const api_command_t commands[] = {
     { "pi",              "get pi calculation status or result",      cmd_pi },
 };
 
-static const uint32_t command_count = sizeof(commands) / sizeof(commands[0]);
-
-void api_handle(const command_t *command)
-{
-    // 1. Проверка на усечение (truncated)
-    if (command->truncated)
-    {
-        printf("error: command longer than 63 characters or 4 arguments\n");
-        return;
-    }
-
-    // 2. Обработка команды help
-    if (strcmp(command->name, "help") == 0)
-    {
-        printf("help             list of commands\n");
-        for (uint32_t i = 0; i < command_count; i++)
-        {
-            printf("%-16s %s\n", commands[i].name, commands[i].help);
-        }
-        return;
-    }
-
-    // 3. Поиск и выполнение команды в таблице
-    for (uint32_t i = 0; i < command_count; i++)
-    {
-        if (strcmp(command->name, commands[i].name) == 0)
-        {
-            if (commands[i].callback != NULL)
-            {
-                commands[i].callback(command);
-            }
-            return;
-        }
-    }
-
-    // 4. Команда не найдена — обязательный ответ с try help
-    printf("error: unknown command '%s', try help\n", command->name);
-}
+const uint32_t api_command_count = sizeof(api_commands) / sizeof(api_commands[0]);

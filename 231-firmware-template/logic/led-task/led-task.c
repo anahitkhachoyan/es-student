@@ -1,14 +1,8 @@
 #include "led-task.h"
 #include <stdio.h>
 #include <string.h>
-#include "pico/stdlib.h"
-#include "hardware/gpio.h"
 #include "systime/systime.h"
-
-// Пин встроенного светодиода на Raspberry Pi Pico обычно GPIO 25
-#ifndef LED_PIN
-#define LED_PIN 25
-#endif
+#include "platform/platform.h"
 
 static led_state_t current_state = LED_STATE_BLINK;
 static uint32_t period_ms = 1000;
@@ -18,7 +12,7 @@ static bool led_is_on = false;
 static void set_gpio_output(bool on)
 {
     led_is_on = on;
-    gpio_put(LED_PIN, on ? 1 : 0);
+    platform_led_set(on);
 }
 
 // Проверка периода по сетке без накопления ошибки
@@ -35,9 +29,6 @@ static bool period_elapsed(uint64_t *last_us, uint64_t period_us)
 
 void led_task_init(void)
 {
-    gpio_init(LED_PIN);
-    gpio_set_dir(LED_PIN, GPIO_OUT);
-
     period_ms = 1000;
     last_toggle_us = systime_us();
     led_task_set_state(LED_STATE_BLINK);
@@ -57,7 +48,6 @@ void led_task_set_state(led_state_t state)
         set_gpio_output(true);
         break;
     case LED_STATE_BLINK:
-        // Устанавливаем метку в прошлое на полупериод, чтобы переключиться сразу
         last_toggle_us = now_us - (period_ms * 1000ULL / 2ULL);
         break;
     }
@@ -98,11 +88,9 @@ void led_task_handle(void)
     {
     case LED_STATE_OFF:
     case LED_STATE_ON:
-        // В этих состояниях задача ничего в цикле не делает, светодиод управляется при входе
         break;
 
     case LED_STATE_BLINK:
-        // Переключаем каждые полпериода
         if (period_elapsed(&last_toggle_us, (uint64_t)(period_ms * 1000ULL / 2ULL)))
         {
             set_gpio_output(!led_is_on);
@@ -121,7 +109,7 @@ void led_task_next_state(void)
     case LED_STATE_ON:
         led_task_set_state(LED_STATE_BLINK);
         break;
-    case LED_STATE_BLINK:
+    caseLED_STATE_BLINK:
         led_task_set_state(LED_STATE_OFF);
         break;
     }

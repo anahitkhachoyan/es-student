@@ -1,12 +1,6 @@
 #include "button-task.h"
-#include "pico/stdlib.h"
-#include "hardware/gpio.h"
-#include "led-task.h"
 #include "systime/systime.h"
-
-#ifndef BUTTON_PIN
-#define BUTTON_PIN 15
-#endif
+#include "platform/platform.h"
 
 // Порог подавления дребезга: ровно 20 мс в микросекундах
 #define DEBOUNCE_DELAY_US 20000
@@ -21,13 +15,11 @@ typedef enum {
 static button_state_t button_state = BUTTON_STATE_RELEASED;
 static uint32_t press_count = 0;
 static uint64_t transition_time_us = 0;
+static button_task_callback_t press_callback = NULL;
 
-void button_task_init(void)
+void button_task_init(button_task_callback_t on_press)
 {
-    gpio_init(BUTTON_PIN);
-    gpio_set_dir(BUTTON_PIN, GPIO_IN);
-    gpio_pull_up(BUTTON_PIN);
-
+    press_callback = on_press;
     button_state = BUTTON_STATE_RELEASED;
     press_count = 0;
     transition_time_us = systime_us();
@@ -35,7 +27,6 @@ void button_task_init(void)
 
 bool button_task_is_pressed(void)
 {
-    // Кнопка считается нажатой и в состоянии PRESSED, и пока идет подтверждение RELEASING
     return (button_state == BUTTON_STATE_PRESSED || button_state == BUTTON_STATE_RELEASING);
 }
 
@@ -46,8 +37,7 @@ uint32_t button_task_get_press_count(void)
 
 void button_task_handle(void)
 {
-    // Кнопка замыкает пин на землю при нажатии (низкий уровень = 0)
-    bool is_low = (gpio_get(BUTTON_PIN) == 0);
+    bool is_low = platform_button_read();
     uint64_t now_us = systime_us();
 
     switch (button_state)
@@ -63,14 +53,15 @@ void button_task_handle(void)
     case BUTTON_STATE_PRESSING:
         if (!is_low)
         {
-            // Уровень вернулся назад — это дребезг/помеха, возвращаемся в отпущенное состояние
             button_state = BUTTON_STATE_RELEASED;
         }
         else if (now_us - transition_time_us >= DEBOUNCE_DELAY_US)
         {
-            // Продержалось 20 мс — нажатие подтверждено!
             press_count++;
-            led_task_next_state();
+            if (press_callback != NULL)
+            {
+                press_callback();
+            }
             button_state = BUTTON_STATE_PRESSED;
         }
         break;
@@ -86,12 +77,10 @@ void button_task_handle(void)
     case BUTTON_STATE_RELEASING:
         if (is_low)
         {
-            // Снова замкнуло — ложное отпускание, возвращаемся в нажатое состояние
             button_state = BUTTON_STATE_PRESSED;
         }
         else if (now_us - transition_time_us >= DEBOUNCE_DELAY_US)
         {
-            // Отпускание подтверждено 20 мс тишины
             button_state = BUTTON_STATE_RELEASED;
         }
         break;
