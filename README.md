@@ -1,6 +1,6 @@
 # Встроенные системы: учебный проект (es-student)
 
-Репозиторий содержит практические работы и лабораторные задания по курсу встраиваемых систем от команды antlab на микроконтроллере Raspberry Pi Pico (RP2040).
+Репозиторий содержит практические работы по курсу встраиваемых систем от команды antlab на микроконтроллере Raspberry Pi Pico (RP2040).
 
 ---
 
@@ -60,4 +60,7 @@
 | 2.3.3 | [![2.3.3](https://github.com/anahitkhachoyan/es-student/actions/workflows/check-2-3-3.yml/badge.svg)](https://github.com/anahitkhachoyan/es-student/actions/workflows/check-2-3-3.yml) |
 | 2.3.4 | [![2.3.4](https://github.com/anahitkhachoyan/es-student/actions/workflows/check-2-3-4.yml/badge.svg)](https://github.com/anahitkhachoyan/es-student/actions/workflows/check-2-3-4.yml) |
 | 2.3.5 | [![2.3.5](https://github.com/anahitkhachoyan/es-student/actions/workflows/check-2-3-5.yml/badge.svg)](https://github.com/anahitkhachoyan/es-student/actions/workflows/check-2-3-5.yml) |
+<<<<<<< HEAD
 | 2.3.6 | [![2.3.6](https://github.com/anahitkhachoyan/es-student/actions/workflows/check-2-3-6.yml/badge.svg)](https://github.com/anahitkhachoyan/es-student/actions/workflows/check-2-3-6.yml) |
+=======
+>>>>>>> 4605a58f179719490277b868ebf3311044820cae
