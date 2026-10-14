@@ -2,20 +2,22 @@
 #include <stdio.h>
 #include <string.h>
 #include "systime/systime.h"
-#include "platform/platform.h"
 
 static led_state_t current_state = LED_STATE_BLINK;
 static uint32_t period_ms = 1000;
 static uint64_t last_toggle_us = 0;
 static bool led_is_on = false;
+static led_task_output_t led_output = NULL;
 
 static void set_gpio_output(bool on)
 {
     led_is_on = on;
-    platform_led_set(on);
+    if (led_output != NULL)
+    {
+        led_output(on);
+    }
 }
 
-// Проверка периода по сетке без накопления ошибки
 static bool period_elapsed(uint64_t *last_us, uint64_t period_us)
 {
     uint64_t now_us = systime_us();
@@ -27,12 +29,14 @@ static bool period_elapsed(uint64_t *last_us, uint64_t period_us)
     return false;
 }
 
-void led_task_init(void)
+void led_task_init(led_task_output_t output_cb)
 {
+    led_output = output_cb;
     period_ms = 1000;
     last_toggle_us = systime_us();
     led_task_set_state(LED_STATE_BLINK);
 }
+
 
 void led_task_set_state(led_state_t state)
 {
@@ -109,7 +113,7 @@ void led_task_next_state(void)
     case LED_STATE_ON:
         led_task_set_state(LED_STATE_BLINK);
         break;
-    caseLED_STATE_BLINK:
+    case LED_STATE_BLINK: 
         led_task_set_state(LED_STATE_OFF);
         break;
     }

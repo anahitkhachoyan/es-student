@@ -30,8 +30,10 @@ int main()
     profiling_stopwatch_init(STOPWATCH_PI, "pi");
 
     stdio_text_protocol_init();
-    led_task_init();
-    button_task_init(led_task_next_state);
+    
+    // Инициализация задач с передачей функций платформы через колбэки
+    led_task_init(platform_led_set);
+    button_task_init(platform_button_read, led_task_next_state);
     pi_task_init();
 
     LOG_INF("Starting %s v%s\n", FIRMWARE_NAME, FIRMWARE_VERSION);

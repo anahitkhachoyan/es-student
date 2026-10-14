@@ -1,8 +1,6 @@
 #include "button-task.h"
 #include "systime/systime.h"
-#include "platform/platform.h"
 
-// Порог подавления дребезга: ровно 20 мс в микросекундах
 #define DEBOUNCE_DELAY_US 20000
 
 typedef enum {
@@ -16,9 +14,11 @@ static button_state_t button_state = BUTTON_STATE_RELEASED;
 static uint32_t press_count = 0;
 static uint64_t transition_time_us = 0;
 static button_task_callback_t press_callback = NULL;
+static button_task_read_t button_read = NULL;
 
-void button_task_init(button_task_callback_t on_press)
+void button_task_init(button_task_read_t read_cb, button_task_callback_t on_press)
 {
+    button_read = read_cb;
     press_callback = on_press;
     button_state = BUTTON_STATE_RELEASED;
     press_count = 0;
@@ -37,7 +37,7 @@ uint32_t button_task_get_press_count(void)
 
 void button_task_handle(void)
 {
-    bool is_low = platform_button_read();
+    bool is_low = (button_read != NULL) ? button_read() : false;
     uint64_t now_us = systime_us();
 
     switch (button_state)
@@ -49,7 +49,6 @@ void button_task_handle(void)
             button_state = BUTTON_STATE_PRESSING;
         }
         break;
-
     case BUTTON_STATE_PRESSING:
         if (!is_low)
         {
@@ -65,7 +64,6 @@ void button_task_handle(void)
             button_state = BUTTON_STATE_PRESSED;
         }
         break;
-
     case BUTTON_STATE_PRESSED:
         if (!is_low)
         {
@@ -73,7 +71,6 @@ void button_task_handle(void)
             button_state = BUTTON_STATE_RELEASING;
         }
         break;
-
     case BUTTON_STATE_RELEASING:
         if (is_low)
         {
