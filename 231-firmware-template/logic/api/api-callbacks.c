@@ -5,7 +5,6 @@
 #include <errno.h>
 #include "device/device.h"
 #include "profiling/profiling.h"
-#include "systime/systime.h"
 #include "led-task.h"
 #include "button-task.h"
 #include "pi-task.h"
@@ -53,12 +52,6 @@ static void cmd_info(const command_t *cmd)
     printf("serial: %s\n", info.serial);
     printf("chip: manufacturer 0x%03x, part 0x%04x, revision %u\n",
            (unsigned)info.manufacturer, (unsigned)info.part, (unsigned)info.revision);
-}
-
-static void cmd_uptime(const command_t *cmd)
-{
-    (void)cmd;
-    printf("uptime: %llu ms\n", systime_ms());
 }
 
 static void cmd_profiling(const command_t *cmd)
@@ -206,10 +199,9 @@ static void cmd_pi(const command_t *cmd)
     }
 }
 
-// Таблица команд прибора
+// Таблица команд прибора (команда uptime перенесена на уровень платформы/main)
 const api_command_t api_commands[] = {
     { "info",            "device passport",                        cmd_info },
-    { "uptime",          "time since reset",                       cmd_uptime },
     { "profiling",       "profiling results for all stopwatches",    cmd_profiling },
     { "profiling_reset", "reset profiling stopwatches",              cmd_profiling_reset },
     { "led_enable",      "turn on led",                            cmd_led_enable },

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "logging/log.h"
 #include "device/device.h"
 #include "firmware.h"
@@ -7,6 +8,7 @@
 #include "systime/systime.h"
 #include "platform/platform.h"
 #include "api/api.h"
+#include "api-commands.h"
 #include "led-task.h"
 #include "button-task.h"
 #include "pi-task.h"
@@ -18,6 +20,15 @@ enum {
     STOPWATCH_BUTTON,
     STOPWATCH_PI
 };
+
+// Обработчик uptime на уровне main/платформы, чтобы не тянуть systime в логику
+static void handle_uptime_command_if_needed(const command_t *command)
+{
+    if (strcmp(command->name, "uptime") == 0)
+    {
+        printf("uptime: %llu ms\n", systime_ms());
+    }
+}
 
 int main()
 {
@@ -31,7 +42,6 @@ int main()
 
     stdio_text_protocol_init();
     
-    // Инициализация задач с передачей функций платформы через колбэки
     led_task_init(platform_led_set);
     button_task_init(platform_button_read, led_task_next_state);
     pi_task_init();
@@ -58,7 +68,15 @@ int main()
         const command_t *command = stdio_text_protocol_handle();
         if (command != NULL)
         {
-            api_handle(command);
+            // Перехватываем uptime на верхнем уровне, остальное передаем в api_handle
+            if (strcmp(command->name, "uptime") == 0)
+            {
+                handle_uptime_command_if_needed(command);
+            }
+            else
+            {
+                api_handle(command);
+            }
         }
         profiling_stop(STOPWATCH_COMMAND);
 
