@@ -1,5 +1,5 @@
 #include "api-commands.h"
-#include "api.h" // для api_get_uptime
+#include "api.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -10,7 +10,7 @@
 #include "button-task.h"
 #include "pi-task.h"
 
-// Вспомогательная функция для безопасного разбора 32-битного числа без знака
+// Вспомогательная функция для безопасного разбора 32-битного числа без знака из строки
 static bool parse_u32(const char *str, uint32_t *out_value)
 {
     if (str == NULL || *str == '\0')
@@ -39,7 +39,7 @@ static void print_led_status(void)
     printf("%s\n", buf);
 }
 
-// Обработчики команд (все static!)
+// Обработчики команд
 static void cmd_info(const command_t *cmd)
 {
     (void)cmd;
@@ -49,7 +49,7 @@ static void cmd_info(const command_t *cmd)
     printf("project: %s\n", info.project);
     printf("repo: %s\n", info.repo);
     printf("board: %s\n", info.board);
-    printf("pico-sdk: %s\n", info.sdk_version);
+    printf("version: %s\n", info.sdk_version);
     printf("serial: %s\n", info.serial);
     printf("chip: manufacturer 0x%03x, part 0x%04x, revision %u\n",
            (unsigned)info.manufacturer, (unsigned)info.part, (unsigned)info.revision);
