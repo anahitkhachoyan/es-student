@@ -9,39 +9,39 @@ project(231_firmware_template)
 
 pico_sdk_init()
 
+# Предупреждения компилятора должны прийти и в библиотеки
 add_compile_options(-Wall)
+
+# libs лежит вне папки проекта: второй аргумент задаёт каталог сборки
+add_subdirectory(../libs ${CMAKE_BINARY_DIR}/libs)
+
+# Выключатель профилирования: 1 — включено, 0 — выключено
+target_compile_definitions(profiling PUBLIC
+    PROFILING_ENABLED=1)
 
 add_executable(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/main.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/led-task/led-task.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/logging/log.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/device/device.c
     ${CMAKE_CURRENT_SOURCE_DIR}/api/api.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/stdio-text-protocol/stdio-text-protocol.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/profiling/profiling.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/led-task/led-task.c
     ${CMAKE_CURRENT_SOURCE_DIR}/button-task/button-task.c
     ${CMAKE_CURRENT_SOURCE_DIR}/pi-task/pi-task.c
 )
 
 target_link_libraries(${PROJECT_NAME}
     pico_stdlib
-    pico_unique_id
+    device
+    logging
+    stdio_text_protocol
+    profiling
+    systime
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/led-task
-    ${CMAKE_CURRENT_SOURCE_DIR}/logging
-    ${CMAKE_CURRENT_SOURCE_DIR}/device
-    ${CMAKE_CURRENT_SOURCE_DIR}/stdio-text-protocol
     ${CMAKE_CURRENT_SOURCE_DIR}/api
-    ${CMAKE_CURRENT_SOURCE_DIR}/profiling
+    ${CMAKE_CURRENT_SOURCE_DIR}/led-task
     ${CMAKE_CURRENT_SOURCE_DIR}/button-task
-    ${CMAKE_CURRENT_SOURCE_DIR}pi-task
-)
-
-target_compile_definitions(${PROJECT_NAME} PRIVATE
-    DEVICE_BOARD="${PICO_BOARD}"
+    ${CMAKE_CURRENT_SOURCE_DIR}/pi-task
 )
 
 pico_enable_stdio_usb(${PROJECT_NAME} 1)
