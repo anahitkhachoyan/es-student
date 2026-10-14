@@ -3,8 +3,6 @@
 
 #define DEBOUNCE_DELAY_US 20000
 
-typedef uint64_t (*button_uptime_cb_t)(void);
-
 typedef enum {
     BUTTON_STATE_RELEASED,
     BUTTON_STATE_PRESSING,
@@ -17,12 +15,6 @@ static uint32_t press_count = 0;
 static uint64_t transition_time_us = 0;
 static button_task_callback_t press_callback = NULL;
 static button_task_read_t button_read = NULL;
-static button_uptime_cb_t uptime_cb = NULL;
-
-void button_set_uptime_callback(button_uptime_cb_t cb)
-{
-    uptime_cb = cb;
-}
 
 void button_task_init(button_task_read_t read_cb, button_task_callback_t on_press)
 {
@@ -43,17 +35,8 @@ uint32_t button_task_get_press_count(void)
     return press_count;
 }
 
-// Классический button_task_handle с конечным автоматом и 20000 мкс
-void button_task_handle(void)
+void button_task_handle(bool is_low, uint64_t now_us)
 {
-    if (button_read == NULL || uptime_cb == NULL)
-    {
-        return;
-    }
-
-    bool is_low = button_read();
-    uint64_t now_us = uptime_cb();
-
     switch (button_state)
     {
     case BUTTON_STATE_RELEASED:
