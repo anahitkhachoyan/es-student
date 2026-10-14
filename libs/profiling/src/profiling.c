@@ -1,6 +1,6 @@
 #include "profiling.h"
 #include <string.h>
-#include "pico/stdlib.h"
+#include "systime/systime.h"
 
 typedef struct {
     const char *name;
@@ -30,7 +30,7 @@ void profiling_start(uint32_t id)
 {
     if (id < PROFILING_MAX_STOPWATCHES && stopwatches[id].active)
     {
-        stopwatches[id].start_us = time_us_64();
+        stopwatches[id].start_us = systime_us();
     }
 }
 
@@ -38,7 +38,7 @@ void profiling_stop(uint32_t id)
 {
     if (id < PROFILING_MAX_STOPWATCHES && stopwatches[id].active)
     {
-        uint64_t now = time_us_64();
+        uint64_t now = systime_us();
         uint64_t elapsed = now - stopwatches[id].start_us;
 
         stopwatches[id].count++;

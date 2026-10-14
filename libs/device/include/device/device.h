@@ -2,7 +2,6 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include "pico/unique_id.h"
 
 // константы: имя устройства, версия прошивки, проект, ссылка на репозиторий
 #define DEVICE_NAME "es-led-module"
@@ -21,7 +20,7 @@ typedef struct {
     char project[32];
     char repo[64];
     char sdk_version[32];
-    char serial[PICO_UNIQUE_BOARD_ID_SIZE_BYTES * 2 + 1];
+    char serial[17];
     uint32_t manufacturer;
     uint32_t part;
     uint32_t revision;
