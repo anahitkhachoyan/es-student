@@ -35,8 +35,10 @@ int main()
 
     led_task_init(platform_led_set);
     // Что делает нажатие каждой кнопки, решает main.c
-    button_task_init(PLATFORM_BUTTON_1, led_task_next_state);
-    button_task_init(PLATFORM_BUTTON_2, led_task_next_period);
+    // Нажатие первой кнопки переключает состояние светодиода, долгое — включает мигание
+    button_task_init(PLATFORM_BUTTON_1, led_task_next_state, led_task_blink);
+    // Нажатие второй кнопки меняет период мигания, долгого действия у неё нет
+    button_task_init(PLATFORM_BUTTON_2, led_task_next_period, NULL);
     pi_task_init();
 
     api_init(systime_ms);
@@ -56,7 +58,7 @@ int main()
         profiling_start(STOPWATCH_BUTTON);
         for (uint32_t b = 0; b < PLATFORM_BUTTON_COUNT; b++)
         {
-            button_task_handle(b, platform_button_read((platform_button_t)b), now_us);
+            button_task_handle(b, platform_button_read((platform_button_t)b));
         }
         profiling_stop(STOPWATCH_BUTTON);
 
