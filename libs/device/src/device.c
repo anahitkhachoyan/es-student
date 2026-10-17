@@ -1,6 +1,7 @@
-#include "device.h"
+#include "device/device.h"
 #include <string.h>
 #include "pico/version.h"
+#include "pico/unique_id.h" 
 #include "hardware/regs/addressmap.h"
 #include "hardware/regs/sysinfo.h"
 

@@ -58,7 +58,7 @@ static void cmd_info(const command_t *cmd)
 static void cmd_uptime(const command_t *cmd)
 {
     (void)cmd;
-    printf("uptime: %llu ms\n", api_get_uptime());
+    printf("uptime: %llu ms\n", (unsigned long long)api_get_uptime());
 }
 
 static void cmd_profiling(const command_t *cmd)
@@ -70,10 +70,11 @@ static void cmd_profiling(const command_t *cmd)
     {
         if (profiling_get(i, &res))
         {
-            printf("%-10s count %-10u mean %.2f us  max %u us\n",
+            // ИСПРАВЛЕНО: %.2f заменено на %u, так как mean_us имеет тип uint32_t
+            printf("%-10s count %-10u mean %u us  max %u us\n",
                    res.name,
                    (unsigned)res.count,
-                   res.mean_us,
+                   (unsigned)res.mean_us,
                    (unsigned)res.max_us);
         }
     }
@@ -202,21 +203,21 @@ static void cmd_pi(const command_t *cmd)
         double pi_val = 0.0;
         uint64_t dur_ms = 0;
         pi_task_get_result(&pi_val, NULL, &dur_ms);
-        printf("pi: %.9f in %llu ms\n", pi_val, dur_ms);
+        printf("pi: %.9f in %llu ms\n", pi_val, (unsigned long long)dur_ms);
     }
 }
 
 // Таблица команд прибора
 const api_command_t api_commands[] = {
-    { "info",            "device passport",                        cmd_info },
-    { "uptime",          "time since reset",                       cmd_uptime },
+    { "info",            "device passport",                          cmd_info },
+    { "uptime",          "time since reset",                         cmd_uptime },
     { "profiling",       "profiling results for all stopwatches",    cmd_profiling },
     { "profiling_reset", "reset profiling stopwatches",              cmd_profiling_reset },
-    { "led_enable",      "turn on led",                            cmd_led_enable },
-    { "led_disable",     "turn off led",                           cmd_led_disable },
-    { "led_blink",       "blink led",                              cmd_led_blink },
+    { "led_enable",      "turn on led",                              cmd_led_enable },
+    { "led_disable",     "turn off led",                             cmd_led_disable },
+    { "led_blink",       "blink led",                                cmd_led_blink },
     { "led_period",      "set blink period: led_period <period_ms>", cmd_led_period },
-    { "button",          "button status and press count",          cmd_button },
+    { "button",          "button status and press count",            cmd_button },
     { "pi_start",        "start pi calculation: pi_start [terms]",   cmd_pi_start },
     { "pi",              "get pi calculation status or result",      cmd_pi },
 };

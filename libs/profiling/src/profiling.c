@@ -1,4 +1,4 @@
-#include "profiling.h"
+#include "profiling/profiling.h"
 #include <string.h>
 #include "systime/systime.h"
 

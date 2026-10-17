@@ -51,12 +51,16 @@ int main()
     {
         profiling_start(STOPWATCH_LOOP);
 
+        // Получаем текущее время один раз на итерацию цикла
+        uint64_t now_us = systime_us();
+
         profiling_start(STOPWATCH_LED);
-        led_task_handle();
+        led_task_handle(now_us); // ИСПРАВЛЕНО: передан аргумент now_us
         profiling_stop(STOPWATCH_LED);
 
         profiling_start(STOPWATCH_BUTTON);
-        button_task_handle();
+        // ИСПРАВЛЕНО: переданы аргументы состояния кнопки и времени
+        button_task_handle(platform_button_read(), now_us); 
         profiling_stop(STOPWATCH_BUTTON);
 
         profiling_start(STOPWATCH_PI);
@@ -73,4 +77,6 @@ int main()
 
         profiling_stop(STOPWATCH_LOOP);
     }
+    
+    return 0;
 }
