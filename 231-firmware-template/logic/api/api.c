@@ -21,11 +21,14 @@ uint64_t api_get_uptime(void)
 
 void api_handle(const command_t *command)
 {
-    // Обходим баг в stdio-text-protocol: при переполнении буфера он сбрасывает 
-    // truncated в false, но оставляет name пустым ("").
-    if (command->truncated || command->name == NULL || command->name[0] == '\0')
+    if (command->truncated)
     {
         printf("error: command longer than 63 characters or 4 arguments\n");
+        return;
+    }
+
+    if (command->name == NULL || command->name[0] == '\0')
+    {
         return;
     }
 
@@ -51,6 +54,6 @@ void api_handle(const command_t *command)
         }
     }
 
-    // Если дошли сюда, команда неизвестна. Имя точно не пустое.
-    printf("error: unknown command '<%s>', try help\n", command->name);
+    // Формат строго по ТЗ: одинарные кавычки вокруг имени команды, без угловых скобок
+    printf("error: unknown command '%s', try help\n", command->name);
 }

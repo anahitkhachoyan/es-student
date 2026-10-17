@@ -26,8 +26,11 @@ target_link_libraries(platform PRIVATE
 )
 
 # Выключатель профилирования: 1 — включено, 0 — выключено
-target_compile_definitions(profiling PUBLIC
-    PROFILING_ENABLED=1)
+# Позволяет переопределить значение при сборке: cmake -DPROFILING_ENABLED=0 ..
+if(NOT DEFINED PROFILING_ENABLED)
+    set(PROFILING_ENABLED 1)
+endif()
+target_compile_definitions(profiling PUBLIC PROFILING_ENABLED=${PROFILING_ENABLED})
 
 # 2. Логика прибора: задачи и команды, СТРОГО БЕЗ SDK
 add_library(logic STATIC

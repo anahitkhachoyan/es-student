@@ -49,7 +49,6 @@ static void cmd_info(const command_t *cmd)
     device_info_t info;
     device_get_info(&info);
 
-    // СТРОГИЙ ПОРЯДОК из подсказки теста
     printf("name: %s\n", DEVICE_NAME);
     printf("version: %s\n", FIRMWARE_VERSION);
     printf("project: %s\n", info.project);
@@ -76,7 +75,8 @@ static void cmd_profiling(const command_t *cmd)
     {
         if (profiling_get(i, &res))
         {
-            printf("%-10s count %-10u mean %u us max %u us\n",
+            // ИСПРАВЛЕНО: два пробела перед "max" для точного соответствия Приложению Б
+            printf("%-10s count %-10u mean %u us  max %u us\n",
                    res.name,
                    (unsigned)res.count,
                    (unsigned)res.mean_us,

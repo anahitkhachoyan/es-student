@@ -1,4 +1,4 @@
-   #include "stdio-text-protocol/stdio-text-protocol.h"
+#include "stdio-text-protocol/stdio-text-protocol.h"
 #include <stdio.h>
 #include "pico/stdlib.h"
 
@@ -55,7 +55,8 @@ const command_t *stdio_text_protocol_handle(void)
 
         if (is_truncated)
         {
-            current_command.name = "";
+            // ИСПРАВЛЕНО: используем реальное имя из буфера, а не пустую строку
+            current_command.name = line_buf;
             current_command.argc = 0;
             return &current_command;
         }
