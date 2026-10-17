@@ -74,11 +74,12 @@ static void cmd_profiling(const command_t *cmd)
     {
         if (profiling_get(i, &res))
         {
-            // ИСПРАВЛЕНО: ОДИН пробел перед max
-            printf("%-10s count %-10u mean %u us max %u us\n",
+            // Формат из методички: имя и count выровнены, mean с двумя знаками,
+            // перед max два пробела
+            printf("%-10s count %-10u mean %.2f us  max %u us\n",
                    res.name,
                    (unsigned)res.count,
-                   (unsigned)res.mean_us,
+                   res.mean_us,
                    (unsigned)res.max_us);
         }
     }

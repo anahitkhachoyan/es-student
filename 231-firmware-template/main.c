@@ -24,72 +24,51 @@ int main()
 {
     platform_init();
 
-#if PROFILING_ENABLED
+    // При выключенном профилировании эти вызовы — пустые макросы
     profiling_stopwatch_init(STOPWATCH_LOOP, "loop");
     profiling_stopwatch_init(STOPWATCH_COMMAND, "command");
     profiling_stopwatch_init(STOPWATCH_LED, "led");
     profiling_stopwatch_init(STOPWATCH_BUTTON, "button");
     profiling_stopwatch_init(STOPWATCH_PI, "pi");
-#endif
 
     stdio_text_protocol_init();
-    
+
     led_task_init(platform_led_set);
     button_task_init(platform_button_read, led_task_next_state);
     pi_task_init();
-    
+
     api_init(systime_ms);
 
     LOG_INF("Starting %s v%s\n", FIRMWARE_NAME, FIRMWARE_VERSION);
 
     while (1)
     {
-#if PROFILING_ENABLED
         profiling_start(STOPWATCH_LOOP);
-#endif
 
         uint64_t now_us = systime_us();
 
-#if PROFILING_ENABLED
         profiling_start(STOPWATCH_LED);
-#endif
         led_task_handle(now_us);
-#if PROFILING_ENABLED
         profiling_stop(STOPWATCH_LED);
-#endif
 
-#if PROFILING_ENABLED
         profiling_start(STOPWATCH_BUTTON);
-#endif
-        button_task_handle(platform_button_read(), now_us); 
-#if PROFILING_ENABLED
+        button_task_handle(platform_button_read(), now_us);
         profiling_stop(STOPWATCH_BUTTON);
-#endif
 
-#if PROFILING_ENABLED
         profiling_start(STOPWATCH_PI);
-#endif
         pi_task_handle();
-#if PROFILING_ENABLED
         profiling_stop(STOPWATCH_PI);
-#endif
 
-#if PROFILING_ENABLED
         profiling_start(STOPWATCH_COMMAND);
-#endif
         const command_t *command = stdio_text_protocol_handle();
         if (command != NULL)
         {
             api_handle(command);
         }
-#if PROFILING_ENABLED
         profiling_stop(STOPWATCH_COMMAND);
-#endif
 
-#if PROFILING_ENABLED
         profiling_stop(STOPWATCH_LOOP);
-#endif
     }
-    
+
     return 0;
 }

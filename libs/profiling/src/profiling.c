@@ -64,11 +64,11 @@ bool profiling_get(uint32_t id, profiling_result_t *result)
     result->count = stopwatches[id].count;
     if (stopwatches[id].count > 0)
     {
-        result->mean_us = (uint32_t)(stopwatches[id].sum_us / stopwatches[id].count);
+        result->mean_us = (double)stopwatches[id].sum_us / (double)stopwatches[id].count;
     }
     else
     {
-        result->mean_us = 0;
+        result->mean_us = 0.0;
     }
     result->max_us = stopwatches[id].max_us;
 
@@ -81,10 +81,13 @@ void profiling_reset(void)
     {
         if (stopwatches[i].active)
         {
+            // Обнуляем только накопленные результаты.
+            // start_us не трогаем: секундомеры loop и command в момент сброса
+            // уже запущены, и их stop после сброса должен считать
+            // от настоящего времени старта, а не от нуля.
             stopwatches[i].count = 0;
             stopwatches[i].sum_us = 0;
             stopwatches[i].max_us = 0;
-            stopwatches[i].start_us = 0;
         }
     }
 }
