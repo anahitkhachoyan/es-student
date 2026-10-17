@@ -12,10 +12,6 @@
 #include "button-task.h"
 #include "pi-task.h"
 
-// Прототипы функций регистрации времени для задач
-void led_set_uptime_callback(uint64_t (*cb)(void));
-void button_set_uptime_callback(uint64_t (*cb)(void));
-
 enum {
     STOPWATCH_LOOP,
     STOPWATCH_COMMAND,
@@ -42,8 +38,6 @@ int main()
     
     // Прокидываем системное время через колбэки в модули логики
     api_init(systime_ms);
-    led_set_uptime_callback(systime_us);
-    button_set_uptime_callback(systime_us);
 
     LOG_INF("Starting %s v%s\n", FIRMWARE_NAME, FIRMWARE_VERSION);
 
