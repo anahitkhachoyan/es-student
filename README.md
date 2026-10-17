@@ -64,4 +64,5 @@
 | 2.3.7 | [![2.3.7](https://github.com/anahitkhachoyan/es-student/actions/workflows/check-2-3-7.yml/badge.svg)](https://github.com/anahitkhachoyan/es-student/actions/workflows/check-2-3-7.yml) |
 | 2.3.8 | [![2.3.8](https://github.com/anahitkhachoyan/es-student/actions/workflows/check-2-3-8.yml/badge.svg)](https://github.com/anahitkhachoyan/es-student/actions/workflows/check-2-3-8.yml) |
 | 2.3.9 | [![2.3.9](https://github.com/anahitkhachoyan/es-student/actions/workflows/check-2-3-9.yml/badge.svg)](https://github.com/anahitkhachoyan/es-student/actions/workflows/check-2-3-9.yml) |
+| 2.3.9d | [![2.3.9d](https://github.com/anahitkhachoyan/es-student/actions/workflows/check-2-3-9d.yml/badge.svg)](https://github.com/anahitkhachoyan/es-student/actions/workflows/check-2-3-9d.yml) |
 
