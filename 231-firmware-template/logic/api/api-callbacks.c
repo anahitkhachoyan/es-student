@@ -74,7 +74,7 @@ static void cmd_profiling(const command_t *cmd)
     {
         if (profiling_get(i, &res))
         {
-            // ИСПРАВЛЕНО: Один пробел перед max, как в примере ТЗ: "mean X us max Y us"
+            // ИСПРАВЛЕНО: ОДИН пробел перед max
             printf("%-10s count %-10u mean %u us max %u us\n",
                    res.name,
                    (unsigned)res.count,

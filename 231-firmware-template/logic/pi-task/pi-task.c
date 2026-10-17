@@ -1,24 +1,23 @@
 #include "pi-task.h"
-#include "systime/systime.h" // Добавлено для замера времени
+#include "systime/systime.h"
 #include <stdint.h>
 #include <stdbool.h>
 
 #define PI_TERMS_PER_CALL 100
 
-static pi_state_t pi_state = PI_STATE_NOT_STARTED;
+static pi_state_t pi_state = PI_STATE_NOT_STARTED;  // <-- Убедись, что здесь NOT_STARTED
 static uint32_t total_terms = 0;
 static uint32_t current_k = 0;
 static double partial_sum = 0.0;
 static double partial_sign = 1.0;
 static double final_pi = 0.0;
 
-// Переменные для замера времени
 static uint64_t start_time_ms = 0;
 static uint64_t duration_ms = 0;
 
 void pi_task_init(void)
 {
-    pi_state = PI_STATE_NOT_STARTED;
+    pi_state = PI_STATE_NOT_STARTED;  // <-- И здесь тоже
     total_terms = 0;
     current_k = 0;
     partial_sum = 0.0;
@@ -27,6 +26,7 @@ void pi_task_init(void)
     start_time_ms = 0;
     duration_ms = 0;
 }
+
 
 bool pi_task_start(uint32_t terms)
 {

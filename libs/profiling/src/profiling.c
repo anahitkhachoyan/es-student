@@ -1,4 +1,7 @@
 #include "profiling/profiling.h"
+
+#if PROFILING_ENABLED
+
 #include <string.h>
 #include "systime/systime.h"
 
@@ -61,7 +64,6 @@ bool profiling_get(uint32_t id, profiling_result_t *result)
     result->count = stopwatches[id].count;
     if (stopwatches[id].count > 0)
     {
-        // Среднее арифметическое (сумма делить на число замеров)
         result->mean_us = (uint32_t)(stopwatches[id].sum_us / stopwatches[id].count);
     }
     else
@@ -86,3 +88,5 @@ void profiling_reset(void)
         }
     }
 }
+
+#endif // PROFILING_ENABLED
