@@ -24,11 +24,13 @@ int main()
 {
     platform_init();
 
+#if PROFILING_ENABLED
     profiling_stopwatch_init(STOPWATCH_LOOP, "loop");
     profiling_stopwatch_init(STOPWATCH_COMMAND, "command");
     profiling_stopwatch_init(STOPWATCH_LED, "led");
     profiling_stopwatch_init(STOPWATCH_BUTTON, "button");
     profiling_stopwatch_init(STOPWATCH_PI, "pi");
+#endif
 
     stdio_text_protocol_init();
     
@@ -36,40 +38,57 @@ int main()
     button_task_init(platform_button_read, led_task_next_state);
     pi_task_init();
     
-    // Прокидываем системное время через колбэки в модули логики
     api_init(systime_ms);
 
     LOG_INF("Starting %s v%s\n", FIRMWARE_NAME, FIRMWARE_VERSION);
 
     while (1)
     {
+#if PROFILING_ENABLED
         profiling_start(STOPWATCH_LOOP);
+#endif
 
-        // Получаем текущее время один раз на итерацию цикла
         uint64_t now_us = systime_us();
 
+#if PROFILING_ENABLED
         profiling_start(STOPWATCH_LED);
-        led_task_handle(now_us); // ИСПРАВЛЕНО: передан аргумент now_us
+#endif
+        led_task_handle(now_us);
+#if PROFILING_ENABLED
         profiling_stop(STOPWATCH_LED);
+#endif
 
+#if PROFILING_ENABLED
         profiling_start(STOPWATCH_BUTTON);
-        // ИСПРАВЛЕНО: переданы аргументы состояния кнопки и времени
+#endif
         button_task_handle(platform_button_read(), now_us); 
+#if PROFILING_ENABLED
         profiling_stop(STOPWATCH_BUTTON);
+#endif
 
+#if PROFILING_ENABLED
         profiling_start(STOPWATCH_PI);
+#endif
         pi_task_handle();
+#if PROFILING_ENABLED
         profiling_stop(STOPWATCH_PI);
+#endif
 
+#if PROFILING_ENABLED
         profiling_start(STOPWATCH_COMMAND);
+#endif
         const command_t *command = stdio_text_protocol_handle();
         if (command != NULL)
         {
             api_handle(command);
         }
+#if PROFILING_ENABLED
         profiling_stop(STOPWATCH_COMMAND);
+#endif
 
+#if PROFILING_ENABLED
         profiling_stop(STOPWATCH_LOOP);
+#endif
     }
     
     return 0;

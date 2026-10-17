@@ -52,6 +52,6 @@ void api_handle(const command_t *command)
         }
     }
 
-    // 4. Команда не найдена
-    printf("error: unknown command '%s', try help\n", command->name);
+    // 4. Команда не найдена (строго с угловыми скобками)
+    printf("error: unknown command '<%s>', try help\n", command->name);
 }

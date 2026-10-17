@@ -1,7 +1,8 @@
 #include "pi-task.h"
+#include "systime/systime.h" // Добавлено для замера времени
 #include <stdint.h>
+#include <stdbool.h>
 
-// Размер порции: один член ряда ~585 тактов. Выбираем 100.
 #define PI_TERMS_PER_CALL 100
 
 static pi_state_t pi_state = PI_STATE_NOT_STARTED;
@@ -9,8 +10,11 @@ static uint32_t total_terms = 0;
 static uint32_t current_k = 0;
 static double partial_sum = 0.0;
 static double partial_sign = 1.0;
-
 static double final_pi = 0.0;
+
+// Переменные для замера времени
+static uint64_t start_time_ms = 0;
+static uint64_t duration_ms = 0;
 
 void pi_task_init(void)
 {
@@ -20,6 +24,8 @@ void pi_task_init(void)
     partial_sum = 0.0;
     partial_sign = 1.0;
     final_pi = 0.0;
+    start_time_ms = 0;
+    duration_ms = 0;
 }
 
 bool pi_task_start(uint32_t terms)
@@ -33,8 +39,11 @@ bool pi_task_start(uint32_t terms)
     current_k = 0;
     partial_sum = 0.0;
     partial_sign = 1.0;
+    
+    // Запоминаем время начала расчёта
+    start_time_ms = systime_ms();
+    
     pi_state = PI_STATE_RUNNING;
-
     return true;
 }
 
@@ -68,6 +77,8 @@ void pi_task_handle(void)
     if (current_k >= total_terms)
     {
         final_pi = partial_sum * 4.0;
+        // Вычисляем итоговое время расчёта
+        duration_ms = systime_ms() - start_time_ms;
         pi_state = PI_STATE_READY;
     }
 }
@@ -81,7 +92,7 @@ bool pi_task_get_result(double *out_pi, uint32_t *out_terms, uint64_t *out_durat
 
     if (out_pi) *out_pi = final_pi;
     if (out_terms) *out_terms = total_terms;
-    if (out_duration_ms) *out_duration_ms = 0; // Время измеряется снаружи или не требуется в логике
+    if (out_duration_ms) *out_duration_ms = duration_ms; // Возвращаем реальное время
 
     return true;
 }

@@ -10,7 +10,6 @@
 #include "button-task.h"
 #include "pi-task.h"
 
-// Вспомогательная функция для безопасного разбора 32-битного числа без знака из строки
 static bool parse_u32(const char *str, uint32_t *out_value)
 {
     if (str == NULL || *str == '\0')
@@ -31,7 +30,6 @@ static bool parse_u32(const char *str, uint32_t *out_value)
     return true;
 }
 
-// Печать текущего статуса светодиода
 static void print_led_status(void)
 {
     char buf[64];
@@ -39,7 +37,6 @@ static void print_led_status(void)
     printf("%s\n", buf);
 }
 
-// Обработчики команд
 static void cmd_info(const command_t *cmd)
 {
     (void)cmd;
@@ -49,7 +46,8 @@ static void cmd_info(const command_t *cmd)
     printf("project: %s\n", info.project);
     printf("repo: %s\n", info.repo);
     printf("board: %s\n", info.board);
-    printf("version: %s\n", info.sdk_version);
+    // ИСПРАВЛЕНО: используем макрос FIRMWARE_VERSION, так как в структуре есть только sdk_version
+    printf("version: %s\n", FIRMWARE_VERSION); 
     printf("serial: %s\n", info.serial);
     printf("chip: manufacturer 0x%03x, part 0x%04x, revision %u\n",
            (unsigned)info.manufacturer, (unsigned)info.part, (unsigned)info.revision);
@@ -70,8 +68,7 @@ static void cmd_profiling(const command_t *cmd)
     {
         if (profiling_get(i, &res))
         {
-            // ИСПРАВЛЕНО: %.2f заменено на %u, так как mean_us имеет тип uint32_t
-            printf("%-10s count %-10u mean %u us  max %u us\n",
+            printf("%-10s count %-10u mean %u us max %u us\n",
                    res.name,
                    (unsigned)res.count,
                    (unsigned)res.mean_us,
@@ -132,7 +129,7 @@ static void cmd_led_period(const command_t *cmd)
 
     if (new_period == 0)
     {
-        printf("error: period_ms must be greater than 0\n");
+        printf("error: usage led_period <period_ms>\n");
         return;
     }
 
@@ -165,7 +162,7 @@ static void cmd_pi_start(const command_t *cmd)
     {
         if (strcmp(cmd->argv[0], "0") == 0)
         {
-            printf("error: terms must be positive\n");
+            printf("error: terms must be greater than 0\n");
             return;
         }
 
@@ -207,7 +204,6 @@ static void cmd_pi(const command_t *cmd)
     }
 }
 
-// Таблица команд прибора
 const api_command_t api_commands[] = {
     { "info",            "device passport",                          cmd_info },
     { "uptime",          "time since reset",                         cmd_uptime },
