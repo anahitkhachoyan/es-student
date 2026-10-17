@@ -17,7 +17,6 @@ static bool parse_u32(const char *str, uint32_t *out_value)
         return false;
     }
 
-    // Явный запрет знаков, чтобы "-1" не парсилось как 4294967295
     if (*str == '-' || *str == '+')
     {
         return false;
@@ -75,8 +74,8 @@ static void cmd_profiling(const command_t *cmd)
     {
         if (profiling_get(i, &res))
         {
-            // ИСПРАВЛЕНО: два пробела перед "max" для точного соответствия Приложению Б
-            printf("%-10s count %-10u mean %u us  max %u us\n",
+            // ИСПРАВЛЕНО: Один пробел перед max, как в примере ТЗ: "mean X us max Y us"
+            printf("%-10s count %-10u mean %u us max %u us\n",
                    res.name,
                    (unsigned)res.count,
                    (unsigned)res.mean_us,
