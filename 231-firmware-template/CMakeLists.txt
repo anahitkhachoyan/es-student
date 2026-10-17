@@ -25,12 +25,9 @@ target_link_libraries(platform PRIVATE
     pico_stdlib
 )
 
-# Выключатель профилирования: cmake -DPROFILING_ENABLED=0 ..
-# Значение по умолчанию (1) задано в profiling.h, поэтому из CMake
-# оно передаётся только когда его указали явно.
-if(DEFINED PROFILING_ENABLED)
-    target_compile_definitions(profiling PUBLIC PROFILING_ENABLED=${PROFILING_ENABLED})
-endif()
+# Выключатель профилирования: 1 — включено, 0 — выключено.
+# Проверка курса переключает значение в этой строке и собирает проект заново.
+target_compile_definitions(profiling PUBLIC PROFILING_ENABLED=1)
 
 # 2. Логика прибора: задачи и команды, СТРОГО БЕЗ SDK
 add_library(logic STATIC
