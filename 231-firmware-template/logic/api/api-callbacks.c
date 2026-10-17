@@ -17,6 +17,12 @@ static bool parse_u32(const char *str, uint32_t *out_value)
         return false;
     }
 
+    // Явный запрет знаков, чтобы "-1" не парсилось как 4294967295
+    if (*str == '-' || *str == '+')
+    {
+        return false;
+    }
+
     char *endptr;
     errno = 0;
     unsigned long val = strtoul(str, &endptr, 10);
@@ -43,14 +49,16 @@ static void cmd_info(const command_t *cmd)
     device_info_t info;
     device_get_info(&info);
 
+    // СТРОГИЙ ПОРЯДОК из подсказки теста
+    printf("name: %s\n", DEVICE_NAME);
+    printf("version: %s\n", FIRMWARE_VERSION);
     printf("project: %s\n", info.project);
     printf("repo: %s\n", info.repo);
     printf("board: %s\n", info.board);
-    // ИСПРАВЛЕНО: используем макрос FIRMWARE_VERSION, так как в структуре есть только sdk_version
-    printf("version: %s\n", FIRMWARE_VERSION); 
     printf("serial: %s\n", info.serial);
     printf("chip: manufacturer 0x%03x, part 0x%04x, revision %u\n",
            (unsigned)info.manufacturer, (unsigned)info.part, (unsigned)info.revision);
+    printf("pico-sdk: %s\n", info.sdk_version);
 }
 
 static void cmd_uptime(const command_t *cmd)
@@ -129,7 +137,7 @@ static void cmd_led_period(const command_t *cmd)
 
     if (new_period == 0)
     {
-        printf("error: usage led_period <period_ms>\n");
+        printf("error: period_ms must be greater than 0\n");
         return;
     }
 
