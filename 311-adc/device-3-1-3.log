@@ -1,0 +1,119 @@
+задание: 3.1.3
+проект: 311-adc
+устройство: 2e8a:000a
+серийный номер: E663682593365138
+порт: COM6
+начало: 2026-11-01T16:04:57
+   0.000 --> 
+   0.515 --> help
+   0.515 <-- help
+   0.515 <-- help             list of commands
+   0.515 <-- info             device passport
+   0.515 <-- uptime           time since reset
+   0.515 <-- profiling        profiling results for all stopwatches
+   0.515 <-- profiling_reset  reset profiling stopwatches
+   0.515 <-- led_enable       turn on led
+   0.515 <-- led_disable      turn off led
+   0.515 <-- led_blink        blink led
+   0.515 <-- led_period       set blink period: led_period <period_ms>
+   0.515 <-- button           button status and press count
+   0.515 <-- pi_start         start pi calculation: pi_start [terms]
+   0.515 <-- pi               get pi calculation status or result
+   0.515 <-- get_voltage      voltage on GP26, ADC input 0
+   0.515 <-- get_temp         chip temperature, degrees Celsius
+   0.515 <-- tm_start         start telemetry: tm_start [<period_ms>]
+   0.515 <-- tm_stop          stop telemetry
+   0.515 <-- charge_on        charge RC circuit, 3.3 V on GP22
+   0.578 <-- charge_off       discharge RC circuit, 0 V on GP22
+   1.515 --> info
+   1.562 <-- info
+   1.562 <-- name: es-adc
+   1.562 <-- version: 1.2.0
+   1.562 <-- project: 311-adc
+   1.562 <-- repo: https://github.com/anahitkhachoyan/es-student
+   1.562 <-- board: pico
+   1.562 <-- serial: E663682593365138
+   1.562 <-- chip: manufacturer 0x927, part 0x0002, revision 2
+   1.562 <-- pico-sdk: 2.3.0
+   2.531 --> tm_start 50
+   2.578 <-- tm_start 50
+   2.578 <-- telemetry: started, period 50 ms
+   2.578 <-- tm: 38915738 0.563 31.8
+   2.578 <-- tm: 38965740 0.582 32.3
+   2.640 <-- tm: 39015746 0.581 31.8
+   2.687 <-- tm: 39065752 0.595 31.8
+   2.750 <-- tm: 39115755 0.589 31.8
+   2.796 <-- tm: 39165763 0.588 31.8
+   2.859 <-- tm: 39215769 0.594 31.8
+   2.906 <-- tm: 39265774 0.591 31.8
+   2.968 <-- tm: 39315780 0.602 32.3
+   3.015 <-- tm: 39365785 0.591 31.8
+   3.078 <-- tm: 39415788 0.594 31.8
+   3.125 <-- tm: 39465787 0.595 31.8
+   3.125 <-- tm: 39515789 0.611 32.3
+   3.187 <-- tm: 39565797 0.596 32.3
+   3.250 <-- tm: 39615800 0.599 31.8
+   3.296 <-- tm: 39665808 0.588 31.8
+   3.359 <-- tm: 39715809 0.588 31.8
+   3.406 <-- tm: 39765810 0.594 32.3
+   3.468 <-- tm: 39815811 0.587 31.8
+   3.515 <-- tm: 39865815 0.593 31.8
+   3.578 <-- tm: 39915814 0.587 31.8
+   3.625 <-- tm: 39965820 0.590 31.8
+   3.625 <-- tm: 40015822 0.574 31.8
+   3.687 <-- tm: 40065822 0.584 31.8
+   3.750 <-- tm: 40115832 0.600 31.8
+   3.796 <-- tm: 40165842 0.592 32.3
+   3.859 <-- tm: 40215847 0.589 31.8
+   3.921 <-- tm: 40265849 0.593 31.8
+   3.968 <-- tm: 40315849 0.589 31.8
+   4.031 <-- tm: 40365859 0.585 32.3
+   4.031 <-- tm: 40415867 0.590 31.8
+   4.078 <-- tm: 40465870 0.585 31.8
+   4.140 <-- tm: 40515874 0.607 31.8
+   4.187 <-- tm: 40565876 0.589 32.3
+   4.265 <-- tm: 40615878 0.587 31.8
+   4.312 <-- tm: 40665886 0.591 31.8
+   4.375 <-- tm: 40715897 0.587 31.8
+   4.437 <-- tm: 40765902 0.582 32.3
+   4.437 <-- tm: 40815905 0.590 31.8
+   4.500 <-- tm: 40865914 0.592 32.3
+   4.546 <-- tm: 40915925 0.594 32.3
+   4.546 --> tm_stop
+   4.609 <-- tm_stop
+   4.609 <-- telemetry: stopped
+   5.546 --> tm_start
+   5.593 <-- tm_start
+   5.593 <-- telemetry: started, period 100 ms
+   5.593 <-- tm: 41938932 0.587 31.4
+   5.656 <-- tm: 42038942 0.583 31.8
+   5.765 <-- tm: 42138945 0.593 31.8
+   5.875 <-- tm: 42238949 0.588 31.8
+   6.000 <-- tm: 42338953 0.588 31.8
+   6.062 <-- tm: 42438953 0.590 31.8
+   6.156 <-- tm: 42538955 0.593 31.8
+   6.265 <-- tm: 42638963 0.592 31.8
+   6.390 <-- tm: 42738967 0.587 32.3
+   6.484 <-- tm: 42838971 0.593 31.8
+   6.593 <-- tm: 42938976 0.584 31.8
+   6.656 <-- tm: 43038982 0.584 31.8
+   6.765 <-- tm: 43138992 0.603 31.8
+   6.890 <-- tm: 43238995 0.596 31.8
+   7.000 <-- tm: 43338998 0.592 31.8
+   7.062 <-- tm: 43439009 0.588 31.8
+   7.062 --> tm_stop
+   7.109 <-- tm_stop
+   7.109 <-- telemetry: stopped
+   8.109 --> tm_start 5
+   8.171 <-- tm_start 5
+   8.171 <-- error: period_ms must be at least 10
+   8.609 --> tm_start 10 20
+   8.656 <-- tm_start 10 20
+   8.656 <-- error: usage tm_start [<period_ms>]
+   9.140 --> tm_start 5x
+   9.203 <-- tm_start 5x
+   9.203 <-- error: usage tm_start [<period_ms>]
+   9.671 --> get_voltage
+   9.718 <-- get_voltage
+   9.718 <-- voltage: 0.591 V
+итог: отправлено кадров 11, принято строк 101

@@ -34,6 +34,7 @@ add_library(logic STATIC
     logic/led-task/led-task.c
     logic/button-task/button-task.c
     logic/pi-task/pi-task.c
+    logic/telemetry-task/telemetry-task.c
     logic/api/api.c
     logic/api/api-callbacks.c
 )

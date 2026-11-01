@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include "stdio-text-protocol/stdio-text-protocol.h"
+#include "telemetry-task/telemetry-task.h"
 
 // Тип колбэка для получения системного времени
 typedef uint64_t (*api_uptime_cb_t)(void);
@@ -13,3 +14,6 @@ void api_handle(const command_t *cmd);
 
 // Получение времени для внутренних нужд API (например, для uptime)
 uint64_t api_get_uptime(void);
+
+// Печатает запись телеметрии строкой tm: <время, мкс> <напряжение, В> <температура, °C>
+void api_print_telemetry(const telemetry_record_t *record);

@@ -11,30 +11,36 @@
 #include "led-task.h"
 #include "button-task.h"
 #include "pi-task.h"
+#include "telemetry-task/telemetry-task.h"
 
 enum {
     STOPWATCH_LOOP,
     STOPWATCH_COMMAND,
     STOPWATCH_LED,
     STOPWATCH_BUTTON,
-    STOPWATCH_PI
+    STOPWATCH_PI,
+    STOPWATCH_TELEMETRY
 };
 
 int main()
 {
     platform_init();
 
+    // При выключенном профилировании эти вызовы — пустые макросы
     profiling_stopwatch_init(STOPWATCH_LOOP, "loop");
     profiling_stopwatch_init(STOPWATCH_COMMAND, "command");
     profiling_stopwatch_init(STOPWATCH_LED, "led");
     profiling_stopwatch_init(STOPWATCH_BUTTON, "button");
     profiling_stopwatch_init(STOPWATCH_PI, "pi");
+    profiling_stopwatch_init(STOPWATCH_TELEMETRY, "telemetry");
 
     stdio_text_protocol_init();
 
     led_task_init(platform_led_set);
     button_task_init(platform_button_read, led_task_next_state);
     pi_task_init();
+    // записи телеметрии печатает api
+    telemetry_task_init(api_print_telemetry);
 
     api_init(systime_ms);
 
@@ -57,6 +63,10 @@ int main()
         profiling_start(STOPWATCH_PI);
         pi_task_handle();
         profiling_stop(STOPWATCH_PI);
+
+        profiling_start(STOPWATCH_TELEMETRY);
+        telemetry_task_handle();
+        profiling_stop(STOPWATCH_TELEMETRY);
 
         profiling_start(STOPWATCH_COMMAND);
         const command_t *command = stdio_text_protocol_handle();

@@ -16,3 +16,6 @@ float platform_voltage_read(void);
 
 // Температура кристалла по встроенному датчику, градусы Цельсия
 float platform_temp_read(void);
+
+// Заряд RC-цепи: true — на цепь 3,3 В, false — ноль, цепь разряжается
+void platform_charge_set(bool on);
