@@ -22,7 +22,6 @@
 #define ADC_VREF_V 3.3f
 #define ADC_LEVELS 4096
 
-// датчик температуры по RP2040 Datasheet, раздел 4.9.5:
 // при 27 °C на нём 0,706 В, и на каждый градус напряжение падает на 0,001721 В
 #define TEMP_SENSOR_V_AT_27C 0.706f
 #define TEMP_SENSOR_V_PER_C 0.001721f
@@ -61,21 +60,18 @@ bool platform_button_read(void)
     return (gpio_get(BUTTON_PIN) == 0);
 }
 
-// Один отсчёт указанного канала АЦП, переведённый в вольты.
-// Каждая функция сама выбирает свой канал, поэтому порядок вызовов не важен.
-static float adc_read_volts(uint channel)
-{
-    adc_select_input(channel);
-    return adc_read() * ADC_VREF_V / ADC_LEVELS;
-}
+// Каждая функция сама выбирает свой канал перед отсчётом,
+// поэтому get_voltage и get_temp можно вызывать в любом порядке.
 
 float platform_voltage_read(void)
 {
-    return adc_read_volts(ADC_CHANNEL);
+    adc_select_input(ADC_CHANNEL);
+    return adc_read() * ADC_VREF_V / ADC_LEVELS;
 }
 
 float platform_temp_read(void)
 {
-    float volts = adc_read_volts(ADC_TEMP_CHANNEL);
+    adc_select_input(ADC_TEMP_CHANNEL);
+    float volts = adc_read() * ADC_VREF_V / ADC_LEVELS;
     return 27.0f - (volts - TEMP_SENSOR_V_AT_27C) / TEMP_SENSOR_V_PER_C;
 }
