@@ -1,0 +1,30 @@
+задание: 3.1.2
+проект: 311-adc
+устройство: 2e8a:000a
+серийный номер: E663682593365138
+порт: COM6
+начало: 2026-11-01T15:33:07
+   0.000 --> 
+   0.546 --> info
+   0.609 <-- info
+   0.609 <-- name: es-adc
+   0.609 <-- version: 1.0.0
+   0.609 <-- project: 311-adc
+   0.609 <-- repo: https://github.com/anahitkhachoyan/es-student
+   0.609 <-- board: pico
+   0.609 <-- serial: E663682593365138
+   0.609 <-- chip: manufacturer 0x927, part 0x0002, revision 2
+   0.609 <-- pico-sdk: 2.3.0
+   1.546 --> get_temp
+   1.609 <-- get_temp
+   1.609 <-- temp: 28.1 C
+   2.546 --> get_temp
+   2.609 <-- get_temp
+   2.609 <-- temp: 28.5 C
+   3.546 --> get_temp
+   3.609 <-- get_temp
+   3.609 <-- temp: 28.5 C
+   4.546 --> get_voltage
+   4.609 <-- get_voltage
+   4.609 <-- voltage: 0.597 V
+итог: отправлено кадров 6, принято строк 17
