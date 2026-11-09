@@ -1,0 +1,72 @@
+задание: 3.2.3
+проект: 321-audio-recorder
+устройство: 2e8a:000a
+серийный номер: E663682593365138
+порт: COM6
+начало: 2026-11-09T21:28:56
+   0.000 --> 
+   0.500 --> help
+   0.500 <-- help
+   0.500 <-- help             list of commands
+   0.500 <-- info             device passport
+   0.500 <-- uptime           time since reset
+   0.500 <-- profiling        profiling results for all stopwatches
+   0.500 <-- profiling_reset  reset profiling stopwatches
+   0.500 <-- led_enable       turn on led
+   0.500 <-- led_disable      turn off led
+   0.500 <-- led_blink        blink led
+   0.500 <-- led_period       set blink period: led_period <period_ms>
+   0.500 <-- button           button status and press count
+   0.500 <-- pi_start         start pi calculation: pi_start [terms]
+   0.500 <-- pi               get pi calculation status or result
+   0.500 <-- get_voltage      voltage on GP26, ADC input 0
+   0.500 <-- get_temp         chip temperature, degrees Celsius
+   0.500 <-- tm_start         start telemetry: tm_start [<period_ms>]
+   0.500 <-- tm_stop          stop telemetry
+   0.500 <-- charge_on        charge RC circuit, 3.3 V on GP22
+   0.500 <-- charge_off       discharge RC circuit, 0 V on GP22
+   0.500 <-- timer_blink_start blink led by timer: timer_blink_start <period_ms>
+   0.500 <-- timer_blink_stop stop timer blink, number of toggles
+   0.500 <-- cap_start        capture by timer: cap_start <N> <period_us>
+   0.500 <-- cap_dump         print timer capture result
+   0.500 <-- dma_cap          capture block by DMA: dma_cap <N>
+   0.500 <-- generate_tone    tone on GP20: generate_tone <Hz>, 0 is off
+   0.500 <-- mic_bias         microphone bias voltage
+   0.500 <-- mic_level        microphone level: mic_level [<ms>]
+   0.563 <-- stream_start     start stream: stream_start [8|16]
+   0.563 <-- stream_stop      stop stream
+   0.563 <-- wdt_enable       enable watchdog: wdt_enable <timeout_ms>
+   0.563 <-- hang             hang the superloop on purpose
+   0.563 <-- reset_reason     reason of the last reset
+   1.500 --> info
+   1.563 <-- info
+   1.563 <-- name: es-recorder
+   1.563 <-- version: 1.2.0
+   1.563 <-- project: 321-audio-recorder
+   1.563 <-- repo: https://github.com/anahitkhachoyan/es-student
+   1.563 <-- board: pico
+   1.563 <-- serial: E663682593365138
+   1.563 <-- chip: manufacturer 0x927, part 0x0002, revision 2
+   1.563 <-- pico-sdk: 2.3.0
+   2.547 --> dma_cap 1000
+   2.610 <-- dma_cap 1000
+   2.610 <-- dma_cap: 1000 samples in 22675 us, expected 22675 us, min 720 max 947 mean 932.7
+   3.047 --> dma_cap 4410
+   3.110 <-- dma_cap 4410
+   3.172 <-- dma_cap: 4410 samples in 100005 us, expected 100000 us, min 723 max 947 mean 934.0
+   3.547 --> dma_cap 8192
+   3.610 <-- dma_cap 8192
+   3.797 <-- dma_cap: 8192 samples in 185764 us, expected 185759 us, min 716 max 950 mean 934.1
+   4.047 --> uptime
+   4.110 <-- uptime
+   4.110 <-- uptime: 112544 ms
+   4.547 --> dma_cap 0
+   4.610 <-- dma_cap 0
+   4.610 <-- error: N must be 1..8192
+   5.047 --> dma_cap 9000
+   5.110 <-- dma_cap 9000
+   5.110 <-- error: N must be 1..8192
+   5.547 --> dma_cap
+   5.610 <-- dma_cap
+   5.610 <-- error: usage dma_cap <N>
+итог: отправлено кадров 10, принято строк 55
